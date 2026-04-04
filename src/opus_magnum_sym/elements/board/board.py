@@ -1,0 +1,101 @@
+# pyright: reportUnusedFunction = false
+from typing import TYPE_CHECKING
+
+import numpy as np
+
+from ..components import ComponentType
+from .directions import Direction
+
+if TYPE_CHECKING:
+    from .hex import Hex
+
+
+class Board:
+    r"""
+    Board is poity-top hexagonal plane ("odd-r" horizontal layout) with axial offset coordinats (r, s).
+
+       row(r)
+    col(s)─┼─►    0       1      2
+           ▼  ┌───────────────────────┐
+              │       │       │       │
+           0  │  0,0  │  0,1  │  0,2  │
+              │       │       │       │
+              │───────┼───────┼───────│
+              │       │       │       │
+           1  │  1,0  │  1,1  │  1,2  │
+              │       │       │       │
+              │───────┼───────┼───────│
+              │       │       │       │
+           2  │  2,0  │  2,1  │  2,2  │
+              │       │       │       │
+              └───────────────────────┘
+
+           / \     / \     / \
+         /     \ /     \ /     \
+        |  0,0  |  0,1  |  0,2  |
+        |       |       |       |
+         \     / \     / \     / \
+           \ /     \ /     \ /     \
+            |  1,0  |  1,1  |  1,2  |
+            |       |       |       |
+           / \     / \     / \     /
+         /     \ /     \ /     \ /
+        |  2,0  |  2,1  |  2,2  |
+        |       |       |       |
+         \     / \     / \     /
+           \ /     \ /     \ /
+    """
+
+    rows: int
+    cols: int
+
+    base_obj: np.ndarray[tuple[int, int], np.dtype[np.int32]]
+    """Semi-static elements on board (manipulator bases, etc.)"""
+    transport: np.ndarray[tuple[int, int], np.dtype[np.int8]]
+    """Direcion of transporters, -1 == no tranport line, can be remotly considerd vector filed"""
+    objects: np.ndarray[tuple[int, int], np.dtype[np.int32]]
+    """Dynamic objects, atoms, particles"""
+    components_ids: np.ndarray[tuple[int, int], np.dtype[np.int32]]
+
+    def __init__(
+        self,
+        rows: int,
+        cols: int,
+    ):
+        self.rows = rows
+        self.cols = cols
+
+        self.base_obj = np.full((rows, cols), ComponentType.EMPTY, dtype=np.int32)
+        self.transport = np.full((rows, cols), Direction.NONE.id, dtype=np.int8)
+        self.objects = np.full((rows, cols), -1, dtype=np.int32)
+        self.components_ids = np.full((rows, cols), -1, dtype=np.int32)
+
+    def in_bounds(self, cell: Hex) -> bool:
+        """Checks if some cell is in bounds of board"""
+        return 0 <= cell.r < self.rows and 0 <= cell.s < self.cols
+
+    # TODO: split in several layers, think about transportatin
+    def free_to_place(self, cell: Hex) -> bool:
+        return (
+            self.base_obj[cell] == ComponentType.EMPTY
+            and self.objects[cell] == ComponentType.EMPTY
+        )  # fmt:skip
+
+    def place_componet(
+        self,
+        cell: Hex,
+        comp_type,
+        comp_id=-1,
+    ) -> bool:
+        if not self.in_bounds(cell) or not self.free_to_place(cell):
+            return False
+        self.base_obj[cell] = comp_type
+        self.components_ids[cell] = comp_id
+        return True
+
+    def remove_component(self, hex_cell: Hex) -> bool:
+        if not self.in_bounds(hex_cell):
+            return False
+        self.base_obj[hex_cell] = ComponentType.EMPTY
+        self.components_ids[hex_cell] = -1
+        return True
