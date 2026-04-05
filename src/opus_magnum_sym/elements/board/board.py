@@ -51,7 +51,7 @@ class Board:
 
     base_obj: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Semi-static elements on board (manipulator bases, etc.)"""
-    transport: np.ndarray[tuple[int, int], np.dtype[np.int8]]
+    transport: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Direcion of transporters, -1 == no tranport line, can be remotly considerd vector filed"""
     objects: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Dynamic objects, atoms, particles"""
@@ -66,8 +66,8 @@ class Board:
         self.cols = cols
 
         self.base_obj = np.full((rows, cols), ComponentType.EMPTY, dtype=np.int32)
-        self.transport = np.full((rows, cols), Direction.NONE.id, dtype=np.int8)
-        self.objects = np.full((rows, cols), -1, dtype=np.int32)
+        self.transport = np.full((rows, cols), Direction.NONE.id, dtype=np.int32)
+        self.objects = np.full((rows, cols), ComponentType.EMPTY, dtype=np.int32)
         self.components_ids = np.full((rows, cols), -1, dtype=np.int32)
 
     def in_bounds(self, cell: Hex) -> bool:
