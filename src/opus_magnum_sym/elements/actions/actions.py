@@ -46,3 +46,13 @@ class StepAction:
     params: dict[str, Any] = field(default_factory=dict)
 
 
+@dataclass(slots=True)
+class Proposal:
+    """
+    Result of previewing one simulation tick.
+    """
+
+    valid: bool
+    updates: list[tuple[str, Any]] = field(default_factory=list)
+    affected: set[Hex] = field(default_factory=set)
+    conflict: str | None = None
