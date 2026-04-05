@@ -1,5 +1,5 @@
 # pyright: reportUnusedFunction = false
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 import numpy as np
 
@@ -93,9 +93,43 @@ class Board:
         self.components_ids[cell] = comp_id
         return True
 
+    # TODO: remove by id
     def remove_component(self, hex_cell: Hex) -> bool:
         if not self.in_bounds(hex_cell):
             return False
         self.base_obj[hex_cell] = ComponentType.EMPTY
         self.components_ids[hex_cell] = -1
         return True
+
+    # TODO: plan trasporter placing logic
+    def place_transporter(self) -> None: ...
+    def remove_transporter(self) -> None: ...
+
+    def place_object(
+        self,
+        hex_cell: Hex,
+        obj_type: int,
+    ) -> bool:
+        if not self.in_bounds(hex_cell) or self.objects[hex_cell] != ComponentType.EMPTY:
+            return False
+        self.objects[hex_cell] = obj_type
+        return True
+
+    def remove_object(self, hex_cell: Hex) -> bool:
+        if not self.in_bounds(hex_cell):
+            return False
+        self.objects[hex_cell] = ComponentType.EMPTY
+        return True
+
+    def step_transporter(self, component, direction) -> None: ...  # pyright: ignore[reportUnusedParameter]
+
+    def get_state(self) -> np.ndarray[tuple[int, int, int], np.dtype[np.int32]]:
+        return np.stack((self.base_obj, self.transport, self.objects), axis=0)
+
+    def clone(self) -> Self:
+        new = self.__class__(self.rows, self.cols)  # typing.Self support
+        new.base_obj = self.base_obj.copy()
+        new.transport = self.transport.copy()
+        new.objects = self.objects.copy()
+        new.components_ids = self.components_ids.copy()
+        return new
