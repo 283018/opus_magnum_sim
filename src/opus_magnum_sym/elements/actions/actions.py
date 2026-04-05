@@ -1,19 +1,48 @@
-from dataclasses import dataclass
-from enum import IntEnum
+from dataclasses import dataclass, field
+from enum import IntEnum, auto
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from opus_magnum_sym.elements.board import Hex
 
 
 class ActionType(IntEnum):
-    ADD_COMPONENT = 0
-    ADD_INSTRUCTION = 1
-    REMOVE_COMPONENT = 2
-    FINISH = 3
+    NONE = 0
+    ADD_COMPONENT = auto()
+    REMOVE_COMPONENT = auto()
+    ADD_INSTRUCTION = auto()
+    REMOVE_INSTRUCTION = auto()
+    REORDER_INSTRUCTION = auto()
+    START_SIMULATION = auto()
+    RESET = auto()
+    FINISH = auto()
 
 
-@dataclass
+class StepActionType(IntEnum):
+    NONE = 0
+    GRAB = auto()
+    RELEASE = auto()
+    ROTATE_CLW = auto()
+    ROTATE_CCLW = auto()
+    EXTEND = auto()
+    RETRACT = auto()
+    MOVE_POS = auto()
+    MOVE_NEG = auto()
+
+
+@dataclass(slots=True)
 class Action:
     type: ActionType
     component_id: int | None = None
-    x: int | None = None
-    y: int | None = None
-    component_type: int | None = None
+    slot: int | None = None
+    step_action: StepActionType | None = None
     instruction_type: int | None = None
+    params: dict[str, Any] = field(default_factory=dict)  # TODO: rething this part for static types
+
+
+@dataclass(slots=True)
+class StepAction:
+    type: StepActionType
+    params: dict[str, Any] = field(default_factory=dict)
+
+
