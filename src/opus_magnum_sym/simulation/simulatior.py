@@ -1,3 +1,4 @@
+from opus_magnum_sym.elements.actions.actions import StepActionType
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -37,18 +38,50 @@ class Simulator:
         program: ProgramState,
         tick: int,
     ) -> Proposal:
+        """
+        Compute effects without applying them.
+        """
         affected: set[Hex] = set()
         updates: list[tuple[str, Any]] = []
 
         # one step = one step_action per component at index tick
         occupied_targets: set[tuple[int, int]] = set()
 
-        for comp in program.all_components():
-            if tick >= len(comp.program):
-                continue
+        # TODO: replace with real object intraction
+        # for comp in program.all_components():
+        #     if tick >= len(comp.program):
+        #         continue
 
-            step_action = comp.program[tick]
-            if step_action is None:
-                continue
+        #     step_action = comp.program[tick]
+        #     if step_action.type is StepActionType.NONE:
+        #         continue
+
+        #     match step_action.type:
+        #         case StepActionType.GRAB:
+        #             affected.add(comp.pos)
+        #             updates.append(("grab", comp.id))
+
+        #         case StepActionType.RELEASE:
+        #             affected.add(comp.pos)
+        #             updates.append(("release", comp.id))
+
+        #         case StepActionType.EXTEND:
+        #             affected.add(comp.pos)
+        #             updates.append(("arm_extention", comp.id))
+
+        #         case StepActionType.RETRACT:
+        #             affected.add(comp.pos)
+        #             updates.append(("arm_retraction", comp.id))
+
+        return Proposal(valid=True, updates=updates, affected=affected)
+
+    def commit_step(
+        self,
+        board: Board,
+        program: ProgramState,
+        proposal: Proposal,
+    ) -> None:
+        if not proposal.valid:
+            return
 
             # TODO: StepActionType dispatch/pesudo-dispatch
