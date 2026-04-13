@@ -5,11 +5,13 @@ import numpy as np
 
 from opus_magnum_sym.elements.board import Direction, Hex
 from opus_magnum_sym.elements.components.base_component import ComponentType
+from opus_magnum_sym.elements.objects.base_object import ObjectType
 
 if TYPE_CHECKING:
     from opus_magnum_sym.elements.board import Hex
 
 
+# TODO switch to either bool return or error raising
 class Board:
     r"""
     Board is poity-top hexagonal plane ("odd-r" horizontal layout) with axial offset coordinats (r, s).
@@ -67,7 +69,7 @@ class Board:
 
         self.base_obj = np.full((rows, cols), ComponentType.EMPTY, dtype=np.int32)
         self.transport = np.full((rows, cols), Direction.NONE.id, dtype=np.int32)
-        self.objects = np.full((rows, cols), ComponentType.EMPTY, dtype=np.int32)
+        self.objects = np.full((rows, cols), ObjectType.NONE, dtype=np.int32)
         self.components_ids = np.full((rows, cols), -1, dtype=np.int32)
 
     def in_bounds(self, cell: Hex) -> bool:
@@ -110,15 +112,18 @@ class Board:
         hex_cell: Hex,
         obj_type: int,
     ) -> bool:
-        if not self.in_bounds(hex_cell) or self.objects[hex_cell] != ComponentType.EMPTY:
+        if not self.in_bounds(hex_cell) or self.objects[hex_cell] != ObjectType.NONE:
             return False
         self.objects[hex_cell] = obj_type
         return True
 
+    def get_object(self, hex_cell) -> ObjectType:
+        return ObjectType(self.objects[hex_cell])
+
     def remove_object(self, hex_cell: Hex) -> bool:
         if not self.in_bounds(hex_cell):
             return False
-        self.objects[hex_cell] = ComponentType.EMPTY
+        self.objects[hex_cell] = ObjectType.NONE
         return True
 
     def step_transporter(self, component, direction) -> None: ...  # pyright: ignore[reportUnusedParameter]
