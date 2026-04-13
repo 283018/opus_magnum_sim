@@ -101,3 +101,14 @@ class Direction:
     H11: _Dir = _Dir(11, "H11", (-1, 0))
 
     BY_ID: dict[int, _Dir] = {d.id: d for d in (NONE, H1, H3, H5, H7, H9, H11)}  # noqa: RUF012
+
+    def from_rotation(self, rotation: int = 0) -> _Dir:
+        rotations = (
+            self.H3,
+            self.H5,
+            self.H7,
+            self.H9,
+            self.H11,
+            self.H1,
+        )
+        return rotations[rotation % 6]
