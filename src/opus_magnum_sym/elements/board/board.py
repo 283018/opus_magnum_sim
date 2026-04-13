@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING, Self
 
 import numpy as np
 
-from ..components import ComponentType
-from .directions import Direction
+from opus_magnum_sym.elements.board import Direction, Hex
+from opus_magnum_sym.elements.components.base_component import ComponentType
 
 if TYPE_CHECKING:
-    from .hex import Hex
+    from opus_magnum_sym.elements.board import Hex
 
 
 class Board:
