@@ -111,4 +111,4 @@ class Direction:
             self.H11,
             self.H1,
         )
-        return rotations[rotation % 6]
+        return rotations[rotation % 6]  # additional check to prevent overflow
