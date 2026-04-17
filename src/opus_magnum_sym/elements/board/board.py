@@ -86,7 +86,7 @@ class Board:
     def place_componet(
         self,
         cell: Hex,
-        comp_type,
+        comp_type: ComponentType,
         comp_id=-1,
     ) -> bool:
         if not self.in_bounds(cell) or not self.free_to_place(cell):
