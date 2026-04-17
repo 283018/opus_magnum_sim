@@ -28,11 +28,8 @@ class Manupulator(Component):
             .apply(self.pos, self.hand_length)
         )  # fmt: skip
 
-    def _rotate_clw(self) -> None:
-        self.rotation = (self.rotation + 1) % 6
-
-    def _rotate_cclw(self) -> None:
-        self.rotation = (self.rotation - 1) % 6
+    def _rotate(self, rotation: int = 1) -> None:
+        self.rotation = (self.rotation + rotation) % 6
 
     def _extend(self) -> None:
         msg = "Assigned EXTEND action to component that does not support this action."
@@ -54,12 +51,23 @@ class Manupulator(Component):
         pos = self.get_hand_pos()
         if self.holding != ObjectType.NONE:
             board.place_object(pos, self.holding)
+            self.holding = ObjectType.NONE
 
     def _execute(self, action: StepAction, board: Board) -> None:
         match action.type:
             case StepActionType.ROTATE_CLW:
-                self._rotate_clw()
+                self._rotate(1)
             case StepActionType.ROTATE_CCLW:
-                self._rotate_cclw()
+                self._rotate(-1)
             case StepActionType.EXTEND:
                 self._extend()
+            case StepActionType.RETRACT:
+                self._retract()
+            case StepActionType.GRAB:
+                self._grab(board)
+            case StepActionType.RELEASE:
+                self._release(board)
+                # TODO: add movement action
+            case _:
+                msg = f"Invalid action assigned to componenet of type manipulator: {action.type} {self.id}"
+                raise ActionAssignmentError(msg, self.type, self.id)
