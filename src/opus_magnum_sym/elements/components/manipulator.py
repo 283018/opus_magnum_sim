@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from opus_magnum_sym.elements.board import Board, Hex
 
 
-class Manupulator(Component):
+class Manipulator(Component):
     def __init__(self, idx: int | None, pos: Hex, rotation: int = 0, length: int = 1) -> None:
         super().__init__(
             idx or index_manager.allocate(),
@@ -69,5 +69,5 @@ class Manupulator(Component):
                 self._release(board)
                 # TODO: add movement action
             case _:
-                msg = f"Invalid action assigned to componenet of type manipulator: {action.type} {self.id}"
+                msg = f"Invalid action assigned to component of type manipulator: {action.type} {self.id}"
                 raise ActionAssignmentError(msg, self.type, self.id)
