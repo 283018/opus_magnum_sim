@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class ComponentType(IntEnum):
-    """Full objects index, includes both base objects (manupulator bases, entrance) and dinamic parts as atoms"""
+    """Full objects index, includes both base objects (manipulator bases, entrance) and dynamic parts as atoms"""
 
     EMPTY = -1
     ENTRANCE = 0
@@ -25,16 +25,16 @@ class Component:
     type: ComponentType
     pos: Hex
     rotation: int = 0
-    program: list[StepAction] = field(default_factory=list)
+    programm: list[StepAction] = field(default_factory=list)
 
     def ensure_slot(self, slot: int) -> None:
-        while len(self.program) <= slot:
-            self.program.append(StepAction(StepActionType.NONE))
+        while len(self.programm) <= slot:
+            self.programm.append(StepAction(StepActionType.NONE))
 
     def set_step_action(self, slot: int, step_action: StepAction) -> None:
         self.ensure_slot(slot)
-        self.program[slot] = step_action
+        self.programm[slot] = step_action
 
     def remove_step_action(self, slot: int) -> None:
-        if 0 <= slot < len(self.program):
-            self.program[slot] = StepAction(StepActionType.NONE)
+        if 0 <= slot < len(self.programm):
+            self.programm[slot] = StepAction(StepActionType.NONE)
