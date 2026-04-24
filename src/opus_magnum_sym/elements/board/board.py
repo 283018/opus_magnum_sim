@@ -3,12 +3,11 @@ from typing import TYPE_CHECKING, Self
 
 import numpy as np
 
-from opus_magnum_sym.elements.board import Direction, Hex
 from opus_magnum_sym.elements.components.base_component import ComponentType
 from opus_magnum_sym.elements.objects.base_object import ObjectType
 
 if TYPE_CHECKING:
-    from opus_magnum_sym.elements.board import Hex
+    from opus_magnum_sym.elements.board.hex import Hex
 
 
 # TODO switch to either bool return or error raising
@@ -53,7 +52,7 @@ class Board:
 
     base_obj: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Semi-static elements on board (manipulator bases, etc.)"""
-    transport: np.ndarray[tuple[int, int], np.dtype[np.int32]]
+    # transport: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Direcion of transporters, -1 == no tranport line, can be remotly considerd vector filed"""
     objects: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Dynamic objects, atoms, particles"""
@@ -68,7 +67,7 @@ class Board:
         self.cols = cols
 
         self.base_obj = np.full((rows, cols), ComponentType.EMPTY, dtype=np.int32)
-        self.transport = np.full((rows, cols), Direction.NONE.id, dtype=np.int32)
+        # self.transport = np.full((rows, cols), Direction.NONE.id, dtype=np.int32)
         self.objects = np.full((rows, cols), ObjectType.NONE, dtype=np.int32)
         self.components_ids = np.full((rows, cols), -1, dtype=np.int32)
 
@@ -80,9 +79,10 @@ class Board:
     def free_to_place(self, cell: Hex) -> bool:
         return (
             self.base_obj[cell] == ComponentType.EMPTY
-            and self.objects[cell] == ComponentType.EMPTY
+            and self.objects[cell] == ObjectType.NONE
         )  # fmt:skip
 
+    # TODO: treat as internal methods, add top-level env.add_component
     def place_componet(
         self,
         cell: Hex,
@@ -134,7 +134,7 @@ class Board:
     def clone(self) -> Self:
         new = self.__class__(self.rows, self.cols)  # typing.Self support
         new.base_obj = self.base_obj.copy()
-        new.transport = self.transport.copy()
+        # new.transport = self.transport.copy()
         new.objects = self.objects.copy()
         new.components_ids = self.components_ids.copy()
         return new
