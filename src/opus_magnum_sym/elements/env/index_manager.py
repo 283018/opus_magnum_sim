@@ -1,4 +1,4 @@
-# TODO: simple version for now, up to re-write if multithreading is needed
+# TODO: simple version for now, up to re-write if multithreading if needed
 
 _next_id: int = 0
 _active: set[int] = set()
