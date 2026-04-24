@@ -8,6 +8,17 @@ if TYPE_CHECKING:
     from opus_magnum_sym.elements.board import Hex
 
 
+class ComponentAssignmentError(Exception):
+    def __init__(
+        self,
+        message,
+        component_type: ComponentType,
+    ) -> None:
+        self.message = message
+        super().__init__(self.message)
+        self.component_type = component_type
+
+
 class ComponentType(IntEnum):
     """Full objects index, includes both base objects (manipulator bases, entrance) and dynamic parts as atoms"""
 
