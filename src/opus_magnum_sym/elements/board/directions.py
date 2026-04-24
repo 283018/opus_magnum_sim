@@ -1,4 +1,4 @@
-from opus_magnum_sym.elements.board import Hex
+from opus_magnum_sym.elements.board.hex import Hex
 
 
 # VERY un-python way of doing that
