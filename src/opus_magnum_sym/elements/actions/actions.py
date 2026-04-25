@@ -38,21 +38,3 @@ class Action:
     step_action: StepActionType | None = None
     instruction_type: int | None = None
     params: dict[str, Any] = field(default_factory=dict)  # TODO: rething this part for static types
-
-
-@dataclass(slots=True)
-class StepAction:
-    type: StepActionType
-    params: dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass(slots=True)
-class Proposal:
-    """
-    Result of previewing one simulation tick.
-    """
-
-    valid: bool
-    updates: list[tuple[str, Any]] = field(default_factory=list)
-    affected: set[Hex] = field(default_factory=set)
-    conflict: str | None = None
