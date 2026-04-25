@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 # TODO switch to either bool return or error raising
 class Board:
     r"""
-    Board is poity-top hexagonal plane ("odd-r" horizontal layout) with axial offset coordinats (r, s).
+    Board is poity-top hexagonal plane ("odd-r" horizontal layout) with axial offset coordinates (r, s).
 
        row(r)
     col(s)─┼─►    0       1      2
@@ -53,7 +53,7 @@ class Board:
     base_obj: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Semi-static elements on board (manipulator bases, etc.)"""
     # transport: np.ndarray[tuple[int, int], np.dtype[np.int32]]
-    """Direcion of transporters, -1 == no tranport line, can be remotly considerd vector filed"""
+    """Direction of transporters, -1 == no transport line, can be remotely coincided vector filed"""
     objects: np.ndarray[tuple[int, int], np.dtype[np.int32]]
     """Dynamic objects, atoms, particles"""
     components_ids: np.ndarray[tuple[int, int], np.dtype[np.int32]]
@@ -75,7 +75,7 @@ class Board:
         """Checks if some cell is in bounds of board"""
         return 0 <= cell.r < self.rows and 0 <= cell.s < self.cols
 
-    # TODO: split in several layers, think about transportatin
+    # TODO: split in several layers, think about transportation
     def free_to_place(self, cell: Hex) -> bool:
         return (
             self.base_obj[cell] == ComponentType.EMPTY
@@ -103,7 +103,7 @@ class Board:
         self.components_ids[hex_cell] = -1
         return True
 
-    # TODO: plan trasporter placing logic
+    # TODO: plan transporter placing logic
     def place_transporter(self) -> None: ...
     def remove_transporter(self) -> None: ...
 
@@ -129,7 +129,14 @@ class Board:
     def step_transporter(self, component, direction) -> None: ...  # pyright: ignore[reportUnusedParameter]
 
     def get_state(self) -> np.ndarray[tuple[int, int, int], np.dtype[np.int32]]:
-        return np.stack((self.base_obj, self.transport, self.objects), axis=0)
+        return np.stack(
+            (
+                self.base_obj,
+                # self.transport,
+                self.objects,
+            ),
+            axis=0,
+        )
 
     def clone(self) -> Self:
         new = self.__class__(self.rows, self.cols)  # typing.Self support
