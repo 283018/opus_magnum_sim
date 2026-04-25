@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING
 
-from opus_magnum_sym.elements.actions.actions import StepAction, StepActionType
+from opus_magnum_sym.elements.actions.actions import StepActionType
 from opus_magnum_sym.elements.actions.base_action import ActionAssignmentError
-from opus_magnum_sym.elements.board import Direction
+from opus_magnum_sym.elements.board.directions import Direction
 from opus_magnum_sym.elements.components.base_component import Component, ComponentType
-from opus_magnum_sym.elements.env import index_manager
 from opus_magnum_sym.elements.objects.base_object import ObjectType
 
 if TYPE_CHECKING:
@@ -12,12 +11,12 @@ if TYPE_CHECKING:
 
 
 class Manipulator(Component):
-    def __init__(self, idx: int | None, pos: Hex, rotation: int = 0, length: int = 1) -> None:
+    def __init__(self, idx: int, pos: Hex, rotation: int = 0, length: int = 1) -> None:
         super().__init__(
-            idx or index_manager.allocate(),
-            ComponentType.ARM,
-            pos,
-            rotation,
+            idx=idx,
+            type=ComponentType.ARM,
+            pos=pos,
+            rotation=rotation,
         )
         self.hand_length: int = length  # TODO: check correct length
         self.holding: ObjectType = ObjectType.NONE
@@ -53,8 +52,8 @@ class Manipulator(Component):
             board.place_object(pos, self.holding)
             self.holding = ObjectType.NONE
 
-    def _execute(self, action: StepAction, board: Board) -> None:
-        match action.type:
+    def _execute(self, action_type: StepActionType, board: Board) -> None:
+        match action_type:
             case StepActionType.ROTATE_CLW:
                 self._rotate(1)
             case StepActionType.ROTATE_CCLW:
@@ -69,5 +68,5 @@ class Manipulator(Component):
                 self._release(board)
                 # TODO: add movement action
             case _:
-                msg = f"Invalid action assigned to component of type manipulator: {action.type} {self.id}"
+                msg = f"Invalid action assigned to component of type manipulator: {action_type} {self.id}"
                 raise ActionAssignmentError(msg, self.type, self.id)
