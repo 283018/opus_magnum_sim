@@ -1,8 +1,9 @@
+from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from opus_magnum_sym.elements.actions.actions import StepAction, StepActionType
+from opus_magnum_sym.elements.actions.actions import StepActionType
 
 if TYPE_CHECKING:
     from opus_magnum_sym.elements.board import Hex
@@ -32,20 +33,24 @@ class ComponentType(IntEnum):
 
 @dataclass
 class Component:
-    id: int
-    type: ComponentType
+    idx: int
     pos: Hex
+    type: ComponentType = ComponentType.EMPTY
     rotation: int = 0
-    programm: list[StepAction] = field(default_factory=list)
+    _programm: defaultdict[int, StepActionType] = field(
+        default_factory=lambda: defaultdict(lambda: StepActionType.NONE),
+    )
 
-    def ensure_slot(self, slot: int) -> None:
-        while len(self.programm) <= slot:
-            self.programm.append(StepAction(StepActionType.NONE))
+    def assign_step_action(self, step: int, action: StepActionType):
+        """
+        Adds step action to program of current component.
+        If action already assigned to provided step will overwrite previous action.
+        """
+        self._programm[step] = action
 
-    def set_step_action(self, slot: int, step_action: StepAction) -> None:
-        self.ensure_slot(slot)
-        self.programm[slot] = step_action
-
-    def remove_step_action(self, slot: int) -> None:
-        if 0 <= slot < len(self.programm):
-            self.programm[slot] = StepAction(StepActionType.NONE)
+    def get_step_action(self, step) -> StepActionType:
+        """
+        Provides action assigned to given step.
+        If none is assigned returns `StepActionType.NONE`
+        """
+        return self._programm.get(step, StepActionType.NONE)
