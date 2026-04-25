@@ -9,7 +9,13 @@ _COMPONENT_MAP: dict[ComponentType, type[Component]] = {
 }
 
 
-def create_component_instance(comp_type: ComponentType) -> type[Component]:
+def get_component_type(comp_type: ComponentType) -> type[Component]:
+    """
+    Provides generator for `Component` subclass by `ComponentType` enum.
+
+    Usage:
+    get_component_type(ComponentType.ARM)(args*, **kwargs)
+    """
     if (cls := _COMPONENT_MAP.get(comp_type)) is None:
         msg = "Unknown component."
         raise ComponentAssignmentError(msg, comp_type)
