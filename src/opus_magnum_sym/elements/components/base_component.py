@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import IntEnum
@@ -6,7 +7,7 @@ from typing import TYPE_CHECKING
 from opus_magnum_sym.elements.actions.actions import StepActionType
 
 if TYPE_CHECKING:
-    from opus_magnum_sym.elements.board import Hex
+    from opus_magnum_sym.elements.board import Board, Hex
 
 
 class ComponentAssignmentError(Exception):
@@ -32,7 +33,7 @@ class ComponentType(IntEnum):
 
 
 @dataclass
-class Component:
+class Component(ABC):
     idx: int
     pos: Hex
     type: ComponentType = ComponentType.EMPTY
@@ -54,3 +55,12 @@ class Component:
         If none is assigned returns `StepActionType.NONE`
         """
         return self._programm.get(step, StepActionType.NONE)
+
+    @abstractmethod
+    def _execute(self, board: Board, action_type: StepActionType) -> None: ...
+
+    def execute_step(self, board: Board, step: int) -> None:
+        self._execute(
+            board=board,
+            action_type=self.get_step_action(step=step),
+        )
