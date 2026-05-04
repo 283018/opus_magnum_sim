@@ -35,6 +35,13 @@ class Simulator:
             msg = "Incorrect initial state of board, ENTER or EXIT is missing."
             raise SimulationRuntimeError(msg, step=self.step)
 
+    def next_step(self):
+        if self.step == 0:
+            self._verify_init_state()
+
+        for component in self.components.items():
+            print(component)
+
     # TODO: do something with kwargs
     # TODO: rework id logic (again)
     def add_component(
