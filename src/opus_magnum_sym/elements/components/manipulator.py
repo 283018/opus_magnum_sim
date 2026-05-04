@@ -32,11 +32,11 @@ class Manipulator(Component):
 
     def _extend(self) -> None:
         msg = "Assigned EXTEND action to component that does not support this action."
-        raise ActionAssignmentError(msg, self.type, self.id)
+        raise ActionAssignmentError(msg, self.type, self.idx)
 
     def _retract(self) -> None:
         msg = "Assigned RETRACT action to component that does not support this action."
-        raise ActionAssignmentError(msg, self.type, self.id)
+        raise ActionAssignmentError(msg, self.type, self.idx)
 
     # TODO: for now just blindly removing/placing from/on board
     def _grab(self, board: Board) -> None:
@@ -52,7 +52,7 @@ class Manipulator(Component):
             board.place_object(pos, self.holding)
             self.holding = ObjectType.NONE
 
-    def _execute(self, action_type: StepActionType, board: Board) -> None:
+    def _execute(self, board: Board, action_type: StepActionType) -> None:
         match action_type:
             case StepActionType.ROTATE_CLW:
                 self._rotate(1)
@@ -69,4 +69,4 @@ class Manipulator(Component):
                 # TODO: add movement action
             case _:
                 msg = f"Invalid action assigned to component of type manipulator: {action_type} {self.id}"
-                raise ActionAssignmentError(msg, self.type, self.id)
+                raise ActionAssignmentError(msg, self.type, self.idx)
