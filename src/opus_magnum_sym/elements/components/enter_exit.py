@@ -42,7 +42,7 @@ class Exit(Component):
     ) -> None:
         super().__init__(
             idx=idx,
-            type=ComponentType.ENTRANCE,
+            type=ComponentType.EXIT,
             pos=pos,
             rotation=rotation,
         )
