@@ -68,5 +68,5 @@ class Manipulator(Component):
                 self._release(board)
                 # TODO: add movement action
             case _:
-                msg = f"Invalid action assigned to component of type manipulator: {action_type} {self.id}"
+                msg = f"Invalid action assigned to component of type manipulator: {action_type} {self.idx}"
                 raise ActionAssignmentError(msg, self.type, self.idx)
