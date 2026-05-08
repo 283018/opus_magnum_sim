@@ -98,6 +98,7 @@ ignore = [
     "PLR0912",           # too many branches
     "PGH003",            # blanket noqa
     "ISC003",            # explicit string concatenation
+    "T201",              # no prints
 ]
 
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
