@@ -17,8 +17,12 @@ def main():
     ic(sim.board.base_obj, sim.board.objects)
 
     sim.assign_step_action(1, 1, StepActionType.GRAB)
+    sim.assign_step_action(1, 2, StepActionType.ROTATE_CLW)
 
-    sim.next_step()
+    for _ in range(10):
+        print("step: ", sim.step)
+        sim.next_step()
+        ic(sim.board.base_obj, sim.board.objects)
 
 
 if __name__ == "__main__":
