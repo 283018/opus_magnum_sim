@@ -1,13 +1,15 @@
 from typing import TYPE_CHECKING
 
+from icecream import ic
+
 from opus_magnum_sym.elements.actions.actions import StepActionType
 from opus_magnum_sym.elements.components import ComponentType
 from opus_magnum_sym.elements.components.base_component import Component
 from opus_magnum_sym.elements.env.level_counter import CORRECT_FINISHED
+from opus_magnum_sym.elements.objects.base_object import ObjectType
 
 if TYPE_CHECKING:
     from opus_magnum_sym.elements.board import Board, Hex
-    from opus_magnum_sym.elements.objects.base_object import ObjectType
 
 
 class Enter(Component):
@@ -53,3 +55,4 @@ class Exit(Component):
             board.remove_object(self.pos)
         global CORRECT_FINISHED  # noqa: PLW0603
         CORRECT_FINISHED += 1
+        print(CORRECT_FINISHED)

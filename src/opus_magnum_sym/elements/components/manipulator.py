@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from icecream import ic
+
 from opus_magnum_sym.elements.actions.actions import StepActionType
 from opus_magnum_sym.elements.actions.base_action import ActionAssignmentError
 from opus_magnum_sym.elements.board.directions import Direction
@@ -54,6 +56,8 @@ class Manipulator(Component):
 
     def _execute(self, board: Board, action_type: StepActionType) -> None:
         match action_type:
+            case StepActionType.NONE:
+                pass
             case StepActionType.ROTATE_CLW:
                 self._rotate(1)
             case StepActionType.ROTATE_CCLW:

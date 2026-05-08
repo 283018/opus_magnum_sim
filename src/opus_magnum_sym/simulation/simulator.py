@@ -5,6 +5,7 @@ from opus_magnum_sym.elements.actions.actions import StepActionType
 from opus_magnum_sym.elements.board import Board, Hex
 from opus_magnum_sym.elements.components import ComponentType
 from opus_magnum_sym.elements.components.components_index import get_component_type
+from opus_magnum_sym.elements.env.level_counter import CORRECT_FINISHED
 
 if TYPE_CHECKING:
     from opus_magnum_sym.elements.components.base_component import Component
@@ -39,8 +40,10 @@ class Simulator:
         if self.step == 0:
             self._verify_init_state()
 
-        for component in self.components.items():
-            print(component)
+        for comp in self.components.values():
+            comp.execute_step(self.board, self.step)
+
+        self.step += 1
 
     # TODO: do something with kwargs
     # TODO: rework id logic (again)

@@ -9,6 +9,7 @@ _COMPONENT_MAP: dict[ComponentType, type[Component]] = {
 }
 
 
+# TODO: move that loginc to base component type
 def get_component_type(comp_type: ComponentType) -> type[Component]:
     """
     Provides generator for `Component` subclass by `ComponentType` enum.
