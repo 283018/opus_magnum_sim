@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from icecream import ic
+
 import opus_magnum_sym.elements.env.index_manager as im
 from opus_magnum_sym.elements.actions.actions import StepActionType
 from opus_magnum_sym.elements.board import Board, Hex
@@ -27,12 +29,19 @@ class Simulator:
         self.board: Board = Board(*size)
         self.im = im
         self.components: dict[int, Component] = {}
+        self.entrypoints: dict[int, Component] = {}
         self.step = 0
 
     def _verify_init_state(self):
         # TODO: create more granular verification if needed
-        all_components = {comp.type for comp in self.components.values()}
-        if not (ComponentType.ENTRANCE in all_components and ComponentType.EXIT in all_components):
+        ic(self.entrypoints.values())
+        entrypoints = {comp.type for comp in self.entrypoints.values()}
+        if not all(
+            (
+                ComponentType.ENTRANCE in entrypoints,
+                ComponentType.EXIT in entrypoints,
+            ),
+        ):
             msg = "Incorrect initial state of board, ENTER or EXIT is missing."
             raise SimulationRuntimeError(msg, step=self.step)
 
@@ -41,6 +50,10 @@ class Simulator:
             self._verify_init_state()
 
         for comp in self.components.values():
+            comp.execute_step(self.board, self.step)
+
+            # TODO: ! that may cause race conditions
+        for comp in self.entrypoints.values():
             comp.execute_step(self.board, self.step)
 
         self.step += 1
@@ -55,7 +68,12 @@ class Simulator:
     ):
         new_id = im.allocate()
         self.board.place_componet(cell, comp_type, new_id)
-        self.components[new_id] = get_component_type(comp_type)(idx=new_id, pos=cell, **kwargs)
+
+        # TODO: make that normal
+        if comp_type in {ComponentType.ENTRANCE, ComponentType.EXIT}:
+            self.entrypoints[new_id] = get_component_type(comp_type)(idx=new_id, pos=cell, **kwargs)
+        else:
+            self.components[new_id] = get_component_type(comp_type)(idx=new_id, pos=cell, **kwargs)
 
     def assign_step_action(
         self,
