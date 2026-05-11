@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 from icecream import ic
 
+from opus_magnum_sym.elements.env import level_counter
 from opus_magnum_sym.elements.actions.actions import StepActionType
 from opus_magnum_sym.elements.components import ComponentType
 from opus_magnum_sym.elements.components.base_component import Component
-from opus_magnum_sym.elements.env.level_counter import CORRECT_FINISHED
 from opus_magnum_sym.elements.objects.base_object import ObjectType
 
 if TYPE_CHECKING:
@@ -51,8 +51,8 @@ class Exit(Component):
         self.object_type = object_type
 
     def _execute(self, board: Board, action_type: StepActionType) -> None:
+        # global CORRECT_FINISHED  # noqa: PLW0603
         if board.get_object(self.pos) == self.object_type:
             board.remove_object(self.pos)
-        global CORRECT_FINISHED  # noqa: PLW0603
-        CORRECT_FINISHED += 1
-        print(CORRECT_FINISHED)
+            level_counter.CORRECT_FINISHED += 1
+        ic(level_counter.CORRECT_FINISHED)
