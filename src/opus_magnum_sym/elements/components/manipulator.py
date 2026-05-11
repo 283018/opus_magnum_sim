@@ -23,6 +23,7 @@ class Manipulator(Component):
         self.hand_length: int = length  # TODO: check correct length
         self.holding: ObjectType = ObjectType.NONE
 
+    @property
     def get_hand_pos(self) -> Hex:
         return (
             Direction().from_rotation(self.hand_length)
@@ -42,14 +43,14 @@ class Manipulator(Component):
 
     # TODO: for now just blindly removing/placing from/on board
     def _grab(self, board: Board) -> None:
-        pos = self.get_hand_pos()
+        pos = self.get_hand_pos
         obj = board.get_object(pos)
         if obj != ObjectType.NONE:
             self.holding = obj
             board.remove_object(pos)
 
     def _release(self, board: Board) -> None:
-        pos = self.get_hand_pos()
+        pos = self.get_hand_pos
         if self.holding != ObjectType.NONE:
             board.place_object(pos, self.holding)
             self.holding = ObjectType.NONE
