@@ -16,12 +16,15 @@ def main():
 
     ic(sim.board.base_obj, sim.board.objects)
 
-    sim.assign_step_action(1, 1, StepActionType.GRAB)
-    sim.assign_step_action(1, 2, StepActionType.ROTATE_CLW)
+    ic(sim.components, sim.entrypoints)
+
+    sim.assign_step_action(2, 1, StepActionType.GRAB)
+    sim.assign_step_action(2, 2, StepActionType.ROTATE_CLW)
+    sim.assign_step_action(2, 2, StepActionType.RELEASE)
 
     for _ in range(10):
-        print("step: ", sim.step)
-        sim.next_step()
+        ic(sim.step)
+
         ic(sim.board.base_obj, sim.board.objects)
 
 

@@ -1,3 +1,5 @@
+from icecream import ic
+
 from opus_magnum_sym.elements.board.hex import Hex
 
 
@@ -111,4 +113,8 @@ class Direction:
             self.H11,
             self.H1,
         )
+        # rot = rotations[rotation % 6]
+        # return rot
+        ic(rotation, rotations)
+        ic(rotations[rotation % 6])
         return rotations[rotation % 6]  # additional check to prevent overflow
